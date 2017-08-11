@@ -3,7 +3,7 @@
             username="sa"
             password=""
             driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
-            url="jdbc:derby:/usr/local/tomcat/archiva/db;create=true" />
+            url="jdbc:derby:/usr/local/archiva/db;create=true" />
   <Resource name="mail/Session" auth="Container"
             type="javax.mail.Session"
             mail.smtp.host="localhost"/>

@@ -89,12 +89,12 @@ RUN set -x \
 
 # Archiva needs some system properties
 RUN set -x \
-  && mkdir -p /usr/local/tomcat/archiva \
-  && mkdir /usr/local/tomcat/archiva/conf \
-       /usr/local/tomcat/archiva/derby \
-  && chown -R tomcat${TOMCAT_VERSION}:tomcat${TOMCAT_VERSION} /usr/local/tomcat/archiva \
+  && mkdir -p /usr/local/archiva \
+  && mkdir /usr/local/archiva/conf \
+       /usr/local/archiva/derby \
+  && chown -R tomcat${TOMCAT_VERSION}:tomcat${TOMCAT_VERSION} /usr/local/archiva \
   && echo "\n# For Archiva" >> /etc/default/tomcat${TOMCAT_VERSION} \
-  && echo "JAVA_OPTS=\"\$JAVA_OPTS -Dappserver.base=/usr/local/tomcat/archiva -Dappserver.home=/usr/local/tomcat/archiva -Dderby.system.home=/usr/local/tomcat/archiva/derby\"" >> /etc/default/tomcat${TOMCAT_VERSION}
+  && echo "JAVA_OPTS=\"\$JAVA_OPTS -Dappserver.base=/usr/local/archiva -Dappserver.home=/usr/local/archiva -Dderby.system.home=/usr/local/archiva/derby\"" >> /etc/default/tomcat${TOMCAT_VERSION}
 
 # Archiva needs a ROOT.xml context file that contains required JNDI objects
 RUN mkdir /etc/tomcat${TOMCAT_VERSION}/CatalinaArchiva/localhost-archiva \
@@ -110,4 +110,4 @@ ENTRYPOINT ["/etc/container/tomcat-entrypoint.sh", "interactive"]
 
 # Use 'docker inspect <name>' to find the volume files on the host.
 # <name> is the value of the --name parameter when invoking docker run.
-VOLUME /var/lib/tomcat${TOMCAT_VERSION}
+VOLUME /usr/local/archiva

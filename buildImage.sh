@@ -57,18 +57,21 @@ docker build $ARGS -t bidms/tomcat-dev:latest imageFiles || check_exit
 
 #
 # We want to temporarily start up the image so we can copy the contents of
-# /var/lib/tomcat8 to the host.  On subsequent container runs, we will
-# mount this host directory into the container.  i.e., we want to persist
-# Tomcat data files across container runs.
+# /var/lib/tomcat8 and /usr/local/archiva to the host.  On subsequent
+# container runs, we will mount these host directories into the container. 
+# i.e., we want to persist data files across container runs.
 #
-if [ ! -z "$HOST_TOMCAT_DIRECTORY" ]; then
-  if [ -e $HOST_TOMCAT_DIRECTORY ]; then
-    echo "$HOST_TOMCAT_DIRECTORY on the host already exists.  Not copying anything."
-    echo "If you want a clean install, delete $HOST_TOMCAT_DIRECTORY and re-run this script."
-    exit
-  fi
-  echo "Temporarily starting the container to copy /var/lib/tomcat8 to host"
-  NO_INTERACTIVE="true" NO_HOST_TOMCAT_DIRECTORY="true" ./runContainer.sh || check_exit
+if [[ ! -e "$HOST_TOMCAT_DIRECTORY" || ! -e "$HOST_ARCHIVA_DIRECTORY" ]]; then
+  echo "Temporarily starting the container to copy directories to host"
+  NO_INTERACTIVE="true" \
+  NO_HOST_TOMCAT_DIRECTORY="true" \
+  NO_HOST_ARCHIVA_DIRECTORY="true" \
+  ./runContainer.sh || check_exit
+  startedContainer="true"
+fi
+
+# Tomcat host directory
+if [ ! -e "$HOST_TOMCAT_DIRECTORY" ]; then
   TMP_TOMCAT_HOST_DIR=$(./getTomcatHostDir.sh)
   if [[ $? != 0 || -z "$TMP_TOMCAT_HOST_DIR" ]]; then
     echo "./getTomcatHostDir.sh failed"
@@ -88,7 +91,38 @@ if [ ! -z "$HOST_TOMCAT_DIRECTORY" ]; then
     exit 1
   fi
   echo "Successfully copied to $HOST_TOMCAT_DIRECTORY"
-  
+else
+  echo "$HOST_TOMCAT_DIRECTORY on the host already exists.  Not copying anything."
+  echo "If you want a clean install, delete $HOST_TOMCAT_DIRECTORY and re-run this script."
+fi
+
+# Archiva host directory
+if [ ! -e "$HOST_ARCHIVA_DIRECTORY" ]; then
+  TMP_ARCHIVA_HOST_DIR=$(./getArchivaHostDir.sh)
+  if [[ $? != 0 || -z "$TMP_ARCHIVA_HOST_DIR" ]]; then
+    echo "./getArchivaHostDir.sh failed"
+    echo "Stopping the container."
+    ./stopContainer.sh
+    exit 1
+  fi
+
+  echo "Temporary host Archiva directory: $TMP_ARCHIVA_HOST_DIR"
+  echo "$HOST_ARCHIVA_DIRECTORY does not yet exist.  Copying from temporary location."
+  echo "You must have sudo access for this to work and you may be prompted for a sudo password."
+  sudo cp -pr $TMP_ARCHIVA_HOST_DIR $HOST_ARCHIVA_DIRECTORY
+  if [ $? != 0 ]; then
+    echo "copy from $TMP_ARCHIVA_HOST_DIR to $HOST_ARCHIVA_DIRECTORY failed"
+    echo "Stopping the container."
+    ./stopContainer.sh
+    exit 1
+  fi
+  echo "Successfully copied to $HOST_ARCHIVA_DIRECTORY"
+else
+  echo "$HOST_ARCHIVA_DIRECTORY on the host already exists.  Not copying anything."
+  echo "If you want a clean install, delete $HOST_ARCHIVA_DIRECTORY and re-run this script."
+fi
+
+if [ ! -z "$startedContainer" ]; then
   echo "Stopping the container."
   ./stopContainer.sh || check_exit
 fi
