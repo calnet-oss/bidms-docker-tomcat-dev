@@ -88,3 +88,12 @@ running the `buildImage.sh` script on then you'll probably want to let
 `buildImage.sh` initialize the run files and then copy the
 `HOST_TOMCAT_DIRECTORY` to all the machines that you will be running the
 image on.  When copying, be careful about preserving file permissions.
+
+## Archiva File Persistence
+
+Docker will mount the host directory specified in `HOST_ARCHIVA_DIRECTORY`
+from `config.env` within the container as `/usr/local/archiva` and this is
+how the Archiva data files are persisted across container runs.
+
+The same initialization steps apply to this as the steps outlined for
+`HOST_TOMCAT_DIRECTORY`.
