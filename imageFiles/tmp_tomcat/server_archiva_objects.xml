@@ -1,0 +1,24 @@
+
+  <!-- archiva -->
+  <Service name="CatalinaArchiva">
+    <Engine name="CatalinaArchiva"
+            defaultHost="localhost-archiva">
+      <Host name="localhost-archiva" appBase="/usr/local/tomcat/webapps/archiva"
+            unpackWARs="true" autoDeploy="true">
+        <Valve className="org.apache.catalina.valves.AccessLogValve"
+               directory="logs"
+               prefix="archiva_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+      </Host>
+    </Engine>
+
+    <Connector port="8560"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="500" SSLEnabled="true">
+      <SSLHostConfig>
+        <Certificate certificateKeystoreFile="/var/lib/tomcat8/certs/tomcat.jks"
+                     type="RSA" />
+      </SSLHostConfig>
+    </Connector>
+  </Service>
+</Server>
