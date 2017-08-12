@@ -40,6 +40,11 @@ This image depends on the the base BIDMS Tomcat Docker image from the
 [bidms-docker-tomcat-base](http://www.github.com/calnet-oss/bidms-docker-tomcat-base)
 project.  If you don't have that image built yet, you'll need that first.
 
+Make sure the `HOST_ARCHIVA_DIRECTORY` directory specified in `config.env`
+does not exist yet on your host machine (unless you're running
+`buildImage.sh` subsequent times and want to keep your existing run files)
+so that the build script will initialize your application server.
+
 Build the container image:
 ```
 ./buildImage.sh
@@ -110,3 +115,23 @@ how the Archiva data files are persisted across container runs.
 
 The same initialization steps apply to this as the steps outlined for
 `HOST_TOMCAT_DIRECTORY`.
+
+## Default Archiva Users
+
+During the `buildImage.sh` initialization step for the
+`HOST_ARCHIVA_DIRECTORY`, the script attempts to create a couple of default
+users within Archiva.
+* `admin` - The administrator account
+  * Password contained in `imageFiles/tmp_passwords/archiva_admin_pw`.  This
+    file must be created by you before running `buildImage.sh` (assuming
+    `HOST_ARCHIVA_DIRECTORY` doesn't exist and you're initializing).
+* `bidms-build` - The account used by the build scripts to deploy artifacts
+  to Archiva.
+  * Password contained in `imageFiles/tmp_passwords/archiva_bidms-build_pw`. 
+    This file must be created by you before running `buildImage.sh`
+    (assuming `HOST_ARCHIVA_DIRECTORY` doesn't exist and you're
+    initializing).
+
+If the script wasn't able to create these default users, the script will
+warn on the error, but still exit cleanly, so check the `buildImage.sh`
+output to confirm these accounts were added successfully.
