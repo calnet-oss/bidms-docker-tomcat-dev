@@ -92,21 +92,3 @@ if [ $curl_exit_code != 0 ]; then
   exit $curl_exit_code
 fi
 echo ""
-
-# so user don't have to change password
-#curl -k -v -f \
-#  "https://localhost:8560/restServices/redbackServices/userService/passwordChangeRequired/${USERNAME}" \
-#  -H 'Host: localhost:8560' \
-#  -H 'Accept: application/json, text/javascript, */*; q=0.01' \
-#  -H 'Accept-Language: en-US,en;q=0.5' \
-#  -H 'X-Requested-With: XMLHttpRequest' \
-#  -H 'Referer: https://localhost:8560/' \
-#  -H "Cookie: $COOKIE" \
-#  -H "X-XSRF-TOKEN: $XSRF_TOKEN" \
-#  -H 'Connection: keep-alive'
-#curl_exit_code=$?
-#if [ $curl_exit_code != 0 ]; then
-#  echo "Set no-password-change-required flag failed" > /dev/stderr
-#  exit $curl_exit_code
-#fi
-#echo ""
