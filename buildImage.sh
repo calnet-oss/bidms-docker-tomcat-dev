@@ -135,14 +135,21 @@ if [ ! -e "$HOST_ARCHIVA_DIRECTORY" ]; then
     
         docker cp imageFiles/tmp_passwords/archiva_bidms-build_pw bidms-tomcat-dev:/tmp
         if [ $? != 0 ]; then
-          # warning
           echo "WARNING: Unable to copy imageFiles/tmp_passwords/archiva_bidms-build_pw into container"
         else
-          docker exec -i -t bidms-tomcat-dev /root/createArchivaUser.sh $cookie $token "bidms-build" "BIDMS Builder" "bidmsbuilder@localhost.bogus" /tmp/archiva_bidms-build_pw
+          docker exec -i -t bidms-tomcat-dev /root/createArchivaUser.sh "$cookie" "$token" "bidms-build" "BIDMS Builder" "bidmsbuilder@localhost.bogus" /tmp/archiva_bidms-build_pw
           if [ $? != 0 ]; then
             echo "WARNING: Unable to create Archiva bidms-builder user"
           else
             echo "Successfully created Archiva bidms-builder user"
+
+            # add roles so user can deploy
+            docker exec -i -t bidms-tomcat-dev /root/addInternalRepoManagerRolesForUser.sh "$cookie" "$token" "bidms-build"
+            if [ $? != 0 ]; then
+              echo "WARNING: Unable to add roles for Archiva bidms-builder user"
+            else
+              echo "Successfully added roles for Archiva bidms-builder user"
+            fi
           fi
           docker exec -i -t bidms-tomcat-dev rm -f /tmp/archiva_bidms-build_pw
         fi
