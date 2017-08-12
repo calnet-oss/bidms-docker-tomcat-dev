@@ -107,6 +107,53 @@ if [ ! -e "$HOST_ARCHIVA_DIRECTORY" ]; then
   fi
 
   echo "Temporary host Archiva directory: $TMP_ARCHIVA_HOST_DIR"
+  
+  # Initialize Archiva by hitting some URLs.
+  echo "Initializing Archiva.  This will take a few seconds as we need to wait for Tomcat to start."
+  sleep 15
+  docker cp imageFiles/tmp_passwords/archiva_admin_pw bidms-tomcat-dev:/tmp
+  if [ $? != 0 ]; then
+    echo "WARNING: Unable to copy imageFiles/tmp_passwords/archiva_admin_pw into container"
+  else
+    docker exec -i -t bidms-tomcat-dev /root/createArchivaAdminUser.sh admin /tmp/archiva_admin_pw
+    if [ $? != 0 ]; then
+      echo "WARNING: Unable to create Archiva admin user"
+      # We can get away with not making this fatal
+    else
+      echo "Successfully created Archiva admin user"
+
+      # Get the login cookie and the xsrf token so we can do things as the
+      # logged in admin
+      cookieAndToken=$(docker exec -i -t bidms-tomcat-dev /root/archivaAdminLogin.sh)
+      cookie=$(echo "$cookieAndToken"|cut -d";" -f1)
+      token=$(echo "$cookieAndToken"|cut -d";" -f2)
+      if [ $? != 0 ]; then
+        echo "WARNING: Unable to login as the Archiva admin user"
+      else
+        echo "Successfully logged in as Archiva admin user"
+        echo "Using cookie $cookie and token $token"
+    
+        docker cp imageFiles/tmp_passwords/archiva_bidms-build_pw bidms-tomcat-dev:/tmp
+        if [ $? != 0 ]; then
+          # warning
+          echo "WARNING: Unable to copy imageFiles/tmp_passwords/archiva_bidms-build_pw into container"
+        else
+          docker exec -i -t bidms-tomcat-dev /root/createArchivaUser.sh $cookie $token "bidms-build" "BIDMS Builder" "bidmsbuilder@localhost.bogus" /tmp/archiva_bidms-build_pw
+          if [ $? != 0 ]; then
+            echo "WARNING: Unable to create Archiva bidms-builder user"
+          else
+            echo "Successfully created Archiva bidms-builder user"
+          fi
+          docker exec -i -t bidms-tomcat-dev rm -f /tmp/archiva_bidms-build_pw
+        fi
+      fi
+    fi
+    docker exec -i -t bidms-tomcat-dev rm -f /tmp/archiva_admin_pw
+  fi
+  
+  echo "Stopping Tomcat"
+  docker exec -i -t bidms-tomcat-dev /etc/init.d/tomcat8 stop
+
   echo "$HOST_ARCHIVA_DIRECTORY does not yet exist.  Copying from temporary location."
   echo "You must have sudo access for this to work and you may be prompted for a sudo password."
   sudo cp -pr $TMP_ARCHIVA_HOST_DIR $HOST_ARCHIVA_DIRECTORY

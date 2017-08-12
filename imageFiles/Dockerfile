@@ -44,7 +44,8 @@ RUN set -x \
        -O /tmp/archiva.war.sha1 \
   && wget "http://www-us.apache.org/dist/archiva/${ARCHIVA_VERSION}/binaries/apache-archiva-${ARCHIVA_VERSION}.war" \
        -O /tmp/archiva.war \
-  && test "$(sha1sum /tmp/archiva.war|cut -d' ' -f1)" = "$(cat /tmp/archiva.war.sha1|cut -d' ' -f1)"
+  && test "$(sha1sum /tmp/archiva.war|cut -d' ' -f1)" = "$(cat /tmp/archiva.war.sha1|cut -d' ' -f1)" \
+  && rm -f /tmp/archiva.war.sha1
 
 # Archiva needs activation.jar and mail.jar in the Tomcat common lib directory
 ARG JAVA_MAIL_VERSION=1.4.7
@@ -100,6 +101,15 @@ RUN set -x \
 RUN mkdir /etc/tomcat${TOMCAT_VERSION}/CatalinaArchiva/localhost-archiva \
   && chown tomcat${TOMCAT_VERSION}:tomcat${TOMCAT_VERSION} /etc/tomcat${TOMCAT_VERSION}/CatalinaArchiva/localhost-archiva
 COPY tmp_tomcat/archiva/ROOT.xml /etc/tomcat${TOMCAT_VERSION}/CatalinaArchiva/localhost-archiva/ROOT.xml
+
+# Add the default archiva configuration.  This includes some default
+# repositories.
+COPY archiva_config/archiva.xml /usr/local/archiva/conf/archiva.xml
+RUN chown tomcat${TOMCAT_VERSION}:tomcat${TOMCAT_VERSION} \
+      /usr/local/archiva/conf/archiva.xml \
+  && chmod 640 /usr/local/archiva/conf/archiva.xml
+
+COPY root/ /root/
 
 RUN rm -rf /core /tmp/tmp_tomcat
 

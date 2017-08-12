@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #
 # Copyright (c) 2017, Regents of the University of California and
@@ -27,32 +27,41 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-set -x
+USERNAME=$1
 
-function check_exit {
-  error_code=$?
-  if [ $error_code != 0 ]; then
-    echo "ERROR: last command exited with an error code of $error_code"
-    exit $error_code
-  fi
-}
+# Specifing password file is optional; if not specified, password will be
+# read from stdin
+PASSWORD_FILE=$2
 
-if [ ! -f "$1" ]; then
-  echo "$1 does not exist"
+if [ -z "$USERNAME" ]; then
+  echo "Username is required as first argument" > /dev/stderr
   exit 1
 fi
 
-grep "common.loader=" "$1" | \
-       sed 's#"$#","/usr/local/tomcat/common-lib/classes","/usr/local/tomcat/common-lib/*.jar"#' \
-       > /tmp/catalina.properties.replacement || check_exit
+# Archiva passwords require at least one number
+if [ ! -z "$PASSWORD_FILE" ]; then
+  if [ ! -f "$PASSWORD_FILE" ]; then
+    echo "$PASSWORD_FILE does not exist" > /dev/stderr
+    exit 1
+  fi
+  PASSWORD=$(cat $PASSWORD_FILE)
+else
+  echo -n "Password: "
+  PASSWORD=$(read -s line && echo $line)
+fi
 
-cat > /tmp/catalina.properties.replacement.sed << EOF
-/common\.loader/ {
-  r /tmp/catalina.properties.replacement
-  d
-}
-EOF
-check_exit
+curl -v -k -f \
+  'https://localhost:8560/restServices/redbackServices/userService/createAdminUser' \
+  -H 'Host: localhost:8560' \
+  -H 'Accept: application/json, text/javascript, */*; q=0.01' \
+  -H 'Accept-Language: en-US,en;q=0.5' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Requested-With: XMLHttpRequest' \
+  -H 'Referer: https://localhost:8560/' \
+  -d "{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\",\"confirmPassword\":\"${PASSWORD}\",\"fullName\":\"the administrator\",\"email\":\"root@localhost.bogus\",\"validated\":true,\"assignedRoles\":[],\"modified\":true,\"rememberme\":false,\"logged\":false}"
+curl_exit_code=$?
 
-sed -f /tmp/catalina.properties.replacement.sed -i "$1" || check_exit
-rm -f /tmp/catalina.properties.replacement /tmp/catalina.properties.replacement.sed
+echo ""
+echo "Curl response: $curl_exit_code"
+
+exit $curl_exit_code

@@ -23,6 +23,19 @@ Dockerfile, is licensed under the [BSD two-clause license](LICENSE.txt).
 
 Copy `config.env.template` to `config.env` and edit to set config values.
 
+Create the `imageFiles/tmp_passwords/archiva_admin_pw` file and set an
+Archiva admin password, which allows you to authenticate into the Archiva
+web application.  Also create the
+`imageFiles/tmp_passwords/archiva_bidms-build_pw` file and set a password
+for the `bidms-build` Archiva user, which will be used to deploy builds to
+Archiva.
+
+Make sure they are only readable by the owner:
+```
+chmod 600 imageFiles/tmp_passwords/archiva_admin_pw \
+  imageFiles/tmp_passwords/archiva_bidms-build_pw
+```
+
 This image depends on the the base BIDMS Tomcat Docker image from the
 [bidms-docker-tomcat-base](http://www.github.com/calnet-oss/bidms-docker-tomcat-base)
 project.  If you don't have that image built yet, you'll need that first.
