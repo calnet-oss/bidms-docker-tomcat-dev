@@ -4,6 +4,9 @@
 
 
 
+
+
+
 <fileTypes>
 <fileType>
 <id>artifacts</id>
@@ -102,6 +105,9 @@
 <maxElementsInMemory>1000</maxElementsInMemory>
 <maxElementsOnDisk>0</maxElementsOnDisk>
 </usersCacheConfiguration>
+
+
+
 
 
 
@@ -317,18 +323,56 @@
 </remoteRepositories>
 <proxyConnectors>
 <proxyConnector>
+<sourceRepoId>internal</sourceRepoId>
+<targetRepoId>jcenter</targetRepoId>
+<policies>
+<snapshots>never</snapshots>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<cache-failures>yes</cache-failures>
+<checksum>fix</checksum>
+<propagate-errors>stop</propagate-errors>
+<releases>once</releases>
+</policies>
+<disabled>false</disabled>
+</proxyConnector>
+<proxyConnector>
 <order>1</order>
 <sourceRepoId>internal</sourceRepoId>
 <targetRepoId>central</targetRepoId>
-<proxyId/>
 <whiteListPatterns>
 <whiteListPattern>**/*</whiteListPattern>
 </whiteListPatterns>
 <policies>
-<releases>once</releases>
-<checksum>fix</checksum>
 <snapshots>never</snapshots>
 <cache-failures>yes</cache-failures>
+<checksum>fix</checksum>
+<releases>once</releases>
+</policies>
+<disabled>false</disabled>
+</proxyConnector>
+<proxyConnector>
+<sourceRepoId>internal</sourceRepoId>
+<targetRepoId>grailscore</targetRepoId>
+<policies>
+<snapshots>never</snapshots>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<cache-failures>yes</cache-failures>
+<checksum>fix</checksum>
+<propagate-errors>stop</propagate-errors>
+<releases>once</releases>
+</policies>
+<disabled>false</disabled>
+</proxyConnector>
+<proxyConnector>
+<sourceRepoId>internal</sourceRepoId>
+<targetRepoId>grailsplugins</targetRepoId>
+<policies>
+<snapshots>never</snapshots>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<cache-failures>yes</cache-failures>
+<checksum>fix</checksum>
+<propagate-errors>stop</propagate-errors>
+<releases>once</releases>
 </policies>
 <disabled>false</disabled>
 </proxyConnector>
