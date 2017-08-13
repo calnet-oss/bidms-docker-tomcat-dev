@@ -7,6 +7,9 @@
 
 
 
+
+
+
 <fileTypes>
 <fileType>
 <id>artifacts</id>
@@ -105,6 +108,9 @@
 <maxElementsInMemory>1000</maxElementsInMemory>
 <maxElementsOnDisk>0</maxElementsOnDisk>
 </usersCacheConfiguration>
+
+
+
 
 
 
@@ -258,20 +264,6 @@
 </repositoryGroups>
 <managedRepositories>
 <managedRepository>
-<location>/usr/local/archiva/repositories/internal</location>
-<releases>true</releases>
-<blockRedeployments>true</blockRedeployments>
-<snapshots>false</snapshots>
-<scanned>true</scanned>
-<daysOlder>30</daysOlder>
-<deleteReleasedSnapshots>false</deleteReleasedSnapshots>
-<skipPackedIndexCreation>false</skipPackedIndexCreation>
-<stageRepoNeeded>false</stageRepoNeeded>
-<id>internal</id>
-<name>Archiva Managed Internal Repository</name>
-<indexDir>/usr/local/archiva/repositories/internal/.indexer</indexDir>
-</managedRepository>
-<managedRepository>
 <location>/usr/local/archiva/repositories/snapshots</location>
 <releases>false</releases>
 <blockRedeployments>false</blockRedeployments>
@@ -285,6 +277,20 @@
 <id>snapshots</id>
 <name>Archiva Managed Snapshot Repository</name>
 <indexDir>/usr/local/archiva/repositories/snapshots/.indexer</indexDir>
+</managedRepository>
+<managedRepository>
+<location>/usr/local/archiva/repositories/internal</location>
+<releases>true</releases>
+<blockRedeployments>false</blockRedeployments>
+<snapshots>false</snapshots>
+<scanned>true</scanned>
+<daysOlder>30</daysOlder>
+<deleteReleasedSnapshots>false</deleteReleasedSnapshots>
+<skipPackedIndexCreation>false</skipPackedIndexCreation>
+<stageRepoNeeded>false</stageRepoNeeded>
+<id>internal</id>
+<name>Archiva Managed Internal Repository</name>
+<indexDir>/usr/local/archiva/repositories/internal/.indexer</indexDir>
 </managedRepository>
 </managedRepositories>
 <remoteRepositories>
@@ -323,15 +329,16 @@
 </remoteRepositories>
 <proxyConnectors>
 <proxyConnector>
+<order>2</order>
 <sourceRepoId>internal</sourceRepoId>
 <targetRepoId>jcenter</targetRepoId>
 <policies>
-<snapshots>never</snapshots>
-<propagate-errors-on-update>always</propagate-errors-on-update>
-<cache-failures>yes</cache-failures>
-<checksum>fix</checksum>
-<propagate-errors>stop</propagate-errors>
 <releases>once</releases>
+<propagate-errors>stop</propagate-errors>
+<checksum>fix</checksum>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<snapshots>never</snapshots>
+<cache-failures>yes</cache-failures>
 </policies>
 <disabled>false</disabled>
 </proxyConnector>
@@ -343,36 +350,38 @@
 <whiteListPattern>**/*</whiteListPattern>
 </whiteListPatterns>
 <policies>
+<releases>once</releases>
+<checksum>fix</checksum>
 <snapshots>never</snapshots>
 <cache-failures>yes</cache-failures>
-<checksum>fix</checksum>
-<releases>once</releases>
 </policies>
 <disabled>false</disabled>
 </proxyConnector>
 <proxyConnector>
+<order>3</order>
 <sourceRepoId>internal</sourceRepoId>
 <targetRepoId>grailscore</targetRepoId>
 <policies>
-<snapshots>never</snapshots>
-<propagate-errors-on-update>always</propagate-errors-on-update>
-<cache-failures>yes</cache-failures>
-<checksum>fix</checksum>
-<propagate-errors>stop</propagate-errors>
 <releases>once</releases>
+<propagate-errors>stop</propagate-errors>
+<checksum>fix</checksum>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<snapshots>never</snapshots>
+<cache-failures>yes</cache-failures>
 </policies>
 <disabled>false</disabled>
 </proxyConnector>
 <proxyConnector>
+<order>4</order>
 <sourceRepoId>internal</sourceRepoId>
 <targetRepoId>grailsplugins</targetRepoId>
 <policies>
-<snapshots>never</snapshots>
-<propagate-errors-on-update>always</propagate-errors-on-update>
-<cache-failures>yes</cache-failures>
-<checksum>fix</checksum>
-<propagate-errors>stop</propagate-errors>
 <releases>once</releases>
+<propagate-errors>stop</propagate-errors>
+<checksum>fix</checksum>
+<propagate-errors-on-update>always</propagate-errors-on-update>
+<snapshots>never</snapshots>
+<cache-failures>yes</cache-failures>
 </policies>
 <disabled>false</disabled>
 </proxyConnector>
