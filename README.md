@@ -50,7 +50,7 @@ Build the container image:
 ./buildImage.sh
 ```
 
-## Running
+## Installing the Docker network bridge
 
 This container requires the `bidms_nw` [user-defined Docker network
 bridge](https://docs.docker.com/engine/userguide/networking/#bridge-networks)
@@ -66,6 +66,8 @@ the named networks):
 ```
 docker network ls
 ```
+
+## Running
 
 To run the container interactively (which means you get a shell prompt):
 ```
