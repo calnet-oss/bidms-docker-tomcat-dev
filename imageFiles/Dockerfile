@@ -38,17 +38,13 @@ RUN set -x \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/*
 
-# Generate a self-signed key pair for TLS
-RUN set -x \
-  && keytool -delete -alias tomcat \
-      -storepass "changeit" \
-      -keystore /etc/tomcat${TOMCAT_VERSION}/certs/tomcat.jks \
-  && echo "Generating key.  This can take a few seconds." \
-  && keytool -genkey -alias tomcat -keyalg RSA -keysize 4096 \
-       -validity 10000 \
-       -storepass "changeit" -keypass "changeit" \
-       -dname "CN=bidms-tomcat-dev,OU=BIDMS Tomcat Docker Dev" \
-       -keystore /etc/tomcat${TOMCAT_VERSION}/certs/tomcat.jks
+# Copy the keystore for TLS
+COPY tmp_tomcat/tomcat.jks /etc/tomcat${TOMCAT_VERSION}/certs
+COPY tmp_tomcat/tomcat_pubkey.pem /etc/tomcat${TOMCAT_VERSION}/certs
+RUN chmod 600 /etc/tomcat${TOMCAT_VERSION}/certs/tomcat.jks \
+  && chown tomcat${TOMCAT_VERSION}:tomcat${TOMCAT_VERSION} \
+       /etc/tomcat${TOMCAT_VERSION}/certs/tomcat.jks \
+       /etc/tomcat${TOMCAT_VERSION}/certs/tomcat_pubkey.pem
 
 ARG ARCHIVA_VERSION=2.2.3
 RUN set -x \
