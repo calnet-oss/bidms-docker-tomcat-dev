@@ -124,6 +124,10 @@ COPY tmp_passwords/archivaAdminLogin.sed /tmp/tmp_passwords/
 COPY tmp_passwords/archiva_admin_pw /tmp/tmp_passwords/
 RUN sed -f /tmp/tmp_passwords/archivaAdminLogin.sed -i /root/archivaAdminLogin.sh
 
+# Since we expect to run lots of web applications, we need lots of memory.
+RUN echo "\n# Memory settings" >> /etc/default/tomcat8
+RUN echo "JAVA_OPTS=\"\$JAVA_OPTS -Xmx3072M\"" >> /etc/default/tomcat8
+
 RUN rm -rf /core /tmp/tmp_tomcat /tmp/tmp_passwords
 
 # webapps-archiva
