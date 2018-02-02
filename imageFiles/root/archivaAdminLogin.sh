@@ -27,6 +27,9 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+ADMINPASSWORD=\
+ADMINPASSWORDHERE
+
 curl -v -k -f --connect-timeout 900 'https://localhost:8560/restServices/redbackServices/loginService/logIn' \
   -H 'Host: localhost:8560' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
@@ -35,7 +38,7 @@ curl -v -k -f --connect-timeout 900 'https://localhost:8560/restServices/redback
   -H 'X-Requested-With: XMLHttpRequest' \
   -H 'Referer: https://localhost:8560/' \
   -H 'Content-Length: 40' \
-  -d '{"username":"admin","password":"admin1"}' 2> /tmp/curl.headers > /tmp/curl.response
+  -d "{\"username\":\"admin\",\"password\":\"$ADMINPASSWORD\"}" 2> /tmp/curl.headers > /tmp/curl.response
 curl_exit_code=$?
 
 if [ $curl_exit_code != 0 ]; then
