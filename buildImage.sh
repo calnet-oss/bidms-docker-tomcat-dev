@@ -139,11 +139,11 @@ if [ ! -e "$HOST_ARCHIVA_DIRECTORY" ]; then
       # Get the login cookie and the xsrf token so we can do things as the
       # logged in admin
       cookieAndToken=$(docker exec -i -t bidms-tomcat-dev /root/archivaAdminLogin.sh)
-      cookie=$(echo "$cookieAndToken"|cut -d";" -f1)
-      token=$(echo "$cookieAndToken"|cut -d";" -f2)
       if [ $? != 0 ]; then
         echo "WARNING: Unable to login as the Archiva admin user"
       else
+        cookie=$(echo "$cookieAndToken"|cut -d";" -f1)
+        token=$(echo "$cookieAndToken"|cut -d";" -f2)
         echo "Successfully logged in as Archiva admin user"
         echo "Using cookie $cookie and token $token"
     
