@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Copyright (c) 2017, Regents of the University of California and
@@ -30,6 +30,9 @@
 ADMINPASSWORD=\
 ADMINPASSWORDHERE
 
+content="{\"username\":\"admin\",\"password\":\"$ADMINPASSWORD\"}"
+content_size="${#content}"
+
 curl -v -k -f --connect-timeout 900 'https://localhost:8560/restServices/redbackServices/loginService/logIn' \
   -H 'Host: localhost:8560' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
@@ -37,9 +40,13 @@ curl -v -k -f --connect-timeout 900 'https://localhost:8560/restServices/redback
   -H 'Content-Type: application/json' \
   -H 'X-Requested-With: XMLHttpRequest' \
   -H 'Referer: https://localhost:8560/' \
-  -H 'Content-Length: 40' \
-  -d "{\"username\":\"admin\",\"password\":\"$ADMINPASSWORD\"}" 2> /tmp/curl.headers > /tmp/curl.response
+  -H "Content-Length: $content_size" \
+  -d "$content" 2> /tmp/curl.headers > /tmp/curl.response
 curl_exit_code=$?
+
+unset ADMINPASSWORD
+unset content
+unset content_size
 
 if [ $curl_exit_code != 0 ]; then
   echo "Login failed" > /dev/stderr
