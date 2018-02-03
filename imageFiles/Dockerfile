@@ -122,9 +122,14 @@ COPY root/ /root/
 # Replace the admin password in the admin login script
 COPY tmp_passwords/archivaAdminLogin.sed /tmp/tmp_passwords/
 COPY tmp_passwords/archiva_admin_pw /tmp/tmp_passwords/
+COPY tmp_passwords/archiva_bidms-build_pw /tmp/tmp_passwords/
 RUN sed -f /tmp/tmp_passwords/archivaAdminLogin.sed -i /root/archivaAdminLogin.sh
 
-RUN rm -rf /core /tmp/tmp_tomcat /tmp/tmp_passwords
+# Initialize Archiva with users
+COPY initializeArchiva.sh /tmp/
+RUN set -x && /tmp/initializeArchiva.sh
+
+RUN rm -rf /core /tmp/*
 
 # webapps-archiva
 EXPOSE 8560

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Copyright (c) 2017, Regents of the University of California and
@@ -50,7 +50,10 @@ else
   PASSWORD=$(read -s line && echo $line)
 fi
 
-curl -v -k -f --connect-timeout 900 \
+content="{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\",\"confirmPassword\":\"${PASSWORD}\",\"fullName\":\"the administrator\",\"email\":\"root@localhost.bogus\",\"validated\":true,\"assignedRoles\":[],\"modified\":true,\"rememberme\":false,\"logged\":false}"
+content_size="${#content}"
+
+curl -k -f --connect-timeout 900 \
   'https://localhost:8560/restServices/redbackServices/userService/createAdminUser' \
   -H 'Host: localhost:8560' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
@@ -58,8 +61,13 @@ curl -v -k -f --connect-timeout 900 \
   -H 'Content-Type: application/json' \
   -H 'X-Requested-With: XMLHttpRequest' \
   -H 'Referer: https://localhost:8560/' \
-  -d "{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\",\"confirmPassword\":\"${PASSWORD}\",\"fullName\":\"the administrator\",\"email\":\"root@localhost.bogus\",\"validated\":true,\"assignedRoles\":[],\"modified\":true,\"rememberme\":false,\"logged\":false}"
+  -H "Content-Length: $content_size" \
+  -d "$content"
 curl_exit_code=$?
+
+unset PASSWORD
+unset content
+unset content_size
 
 echo ""
 echo "Curl response: $curl_exit_code"

@@ -75,7 +75,7 @@ else
   PASSWORD=$(read -s line && echo $line)
 fi
 
-curl -k -v -f --connect-timeout 900 \
+curl -k -f --connect-timeout 900 \
   'https://localhost:8560/restServices/redbackServices/userService/createUser' \
   -H 'Host: localhost:8560' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
