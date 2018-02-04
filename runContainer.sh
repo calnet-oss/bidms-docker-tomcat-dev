@@ -106,7 +106,9 @@ fi
 
 if [[ -z "$NO_HOST_TOMCAT_DIRECTORY" && ! -z "$HOST_TOMCAT_DIRECTORY" ]]; then
   echo "HOST_TOMCAT_DIRECTORY=$HOST_TOMCAT_DIRECTORY"
-  MOUNTPARAMS+="-v $HOST_TOMCAT_DIRECTORY:/var/lib/tomcat8 "
+  if [ $USE_HOST_VOLUMES ]; then
+    MOUNTPARAMS+="-v $HOST_TOMCAT_DIRECTORY:/var/lib/tomcat8 "
+  fi
 else
   # Docker will choose where it wants to put it on the host.
   # Use docker inspect bidms-tomcat-dev to find out where.
@@ -115,7 +117,9 @@ fi
 
 if [[ -z "$NO_HOST_ARCHIVA_DIRECTORY" && ! -z "$HOST_ARCHIVA_DIRECTORY" ]]; then
   echo "HOST_ARCHIVA_DIRECTORY=$HOST_ARCHIVA_DIRECTORY"
-  MOUNTPARAMS+="-v $HOST_ARCHIVA_DIRECTORY:/usr/local/archiva "
+  if [ $USE_HOST_VOLUMES ]; then
+    MOUNTPARAMS+="-v $HOST_ARCHIVA_DIRECTORY:/usr/local/archiva "
+  fi
 else
   # Docker will choose where it wants to put it on the host.
   # Use docker inspect bidms-tomcat-dev to find out where.
