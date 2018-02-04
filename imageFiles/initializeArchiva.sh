@@ -113,6 +113,10 @@ function initialize_archiva {
       fi
       /root/createArchivaUser.sh "$cookie" "$token" "bidms-build" "BIDMS Builder" "bidmsbuilder@localhost.bogus" /tmp/tmp_passwords/archiva_bidms-build_pw
       if [ $? != 0 ]; then
+        echo "Trying again."
+        sleep 10
+      fi
+      if [ $? != 0 ]; then
         echo "Unable to create Archiva bidms-builder user" > /dev/stderr
         exit 1
       else
