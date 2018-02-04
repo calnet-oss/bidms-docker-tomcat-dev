@@ -47,7 +47,9 @@ if [ -z "$USERNAME" ]; then
   exit 1
 fi
 
-# "{\"username\":\"$USERNAME\",\"password\":null,\"confirmPassword\":null,\"fullName\":\"BIDMS Builder\",\"email\":\"bidmsbuilder@localhost.bogus\",\"permanent\":false,\"validated\":true,\"timestampAccountCreation\":\"Sat, 12 Aug 2017 11:41:14 -0700 - 4 minutes ago\",\"timestampLastLogin\":null,\"timestampLastPasswordChange\":\"Sat, 12 Aug 2017 11:41:14 -0700 - 4 minutes ago\",\"locked\":false,\"passwordChangeRequired\":false,\"assignedRoles\":[\"Registered User\",\"Repository Manager - snapshots\",\"Repository Manager - internal\"],\"modified\":false,\"readOnly\":false,\"userManagerId\":\"jdo\",\"rememberme\":false,\"validationToken\":null,\"logged\":false}"
+content="{\"username\":\"$USERNAME\",\"assignedRoles\":[\"Registered User\",\"Repository Manager - snapshots\",\"Repository Manager - internal\"]}"
+content_size="${#content}"
+
 curl -k -f --connect-timeout 900 'https://localhost:8560/restServices/redbackServices/roleManagementService/updateUserRoles' \
   -H 'Host: localhost:8560' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
@@ -57,8 +59,12 @@ curl -k -f --connect-timeout 900 'https://localhost:8560/restServices/redbackSer
   -H 'X-Requested-With: XMLHttpRequest' \
   -H 'Referer: https://localhost:8560/' \
   -H "Cookie: $COOKIE" \
-  -d "{\"username\":\"$USERNAME\",\"assignedRoles\":[\"Registered User\",\"Repository Manager - snapshots\",\"Repository Manager - internal\"]}"
+  -d "$content"
 curl_exit_code=$?
+
+unset content
+unset content_size
+
 if [ $curl_exit_code != 0 ]; then
   echo "Add roles failed" > /dev/stderr
   exit $curl_exit_code
