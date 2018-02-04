@@ -75,6 +75,9 @@ else
   PASSWORD=$(read -s line && echo $line)
 fi
 
+content="{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\",\"confirmPassword\":\"${PASSWORD}\",\"fullName\":\"${FULLNAME}\",\"email\":\"${EMAIL}\",\"validated\":true,\"assignedRoles\":[],\"modified\":true,\"rememberme\":false,\"logged\":false}"
+content_size="${#content}"
+
 curl -k -f --connect-timeout 900 \
   'https://localhost:8560/restServices/redbackServices/userService/createUser' \
   -H 'Host: localhost:8560' \
@@ -85,8 +88,14 @@ curl -k -f --connect-timeout 900 \
   -H 'Referer: https://localhost:8560/' \
   -H "Cookie: $COOKIE" \
   -H "X-XSRF-TOKEN: $XSRF_TOKEN" \
-  -d "{\"username\":\"${USERNAME}\",\"password\":\"${PASSWORD}\",\"confirmPassword\":\"${PASSWORD}\",\"fullName\":\"${FULLNAME}\",\"email\":\"${EMAIL}\",\"validated\":true,\"assignedRoles\":[],\"modified\":true,\"rememberme\":false,\"logged\":false}"
+  -H "Content-Length: $content_size" \
+  -d "$content"
 curl_exit_code=$?
+
+unset PASSWORD
+unset content
+unset content_size
+
 if [ $curl_exit_code != 0 ]; then
   echo "Add user failed" > /dev/stderr
   exit $curl_exit_code
