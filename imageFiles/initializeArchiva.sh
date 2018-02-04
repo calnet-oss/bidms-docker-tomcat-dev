@@ -115,6 +115,7 @@ function initialize_archiva {
       if [ $? != 0 ]; then
         echo "Trying again."
         sleep 10
+        /root/createArchivaUser.sh "$cookie" "$token" "bidms-build" "BIDMS Builder" "bidmsbuilder@localhost.bogus" /tmp/tmp_passwords/archiva_bidms-build_pw
       fi
       if [ $? != 0 ]; then
         echo "Unable to create Archiva bidms-builder user" > /dev/stderr
@@ -124,6 +125,11 @@ function initialize_archiva {
 
         # add roles so user can deploy
         /root/addInternalRepoManagerRolesForUser.sh "$cookie" "$token" "bidms-build"
+        if [ $? != 0 ]; then
+          echo "Trying again."
+          sleep 10
+          /root/addInternalRepoManagerRolesForUser.sh "$cookie" "$token" "bidms-build"
+        fi
         if [ $? != 0 ]; then
           echo "Unable to add roles for Archiva bidms-builder user" > /dev/stderr
           exit 1
