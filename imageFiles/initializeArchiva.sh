@@ -37,7 +37,7 @@ function startup_tomcat {
   echo "export CATALINA_HOME=/usr/share/tomcat8" >> /tmp/startup.sh
   echo "export CATALINA_BASE=/var/lib/tomcat8" >> /tmp/startup.sh
   echo "export CATALINA_TMPDIR=/tmp/tomcat" >> /tmp/startup.sh
-  echo "export JAVA_OPTS=\"-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Djava.net.preferIPv4Stack=true -Dgrails.env=development -Dregistry.config.location=/var/lib/tomcat8/registry -Dhazelcast.config=/etc/tomcat8/hazelcast.xml -Dappserver.base=/usr/local/archiva -Dappserver.home=/usr/local/archiva -Dderby.system.home=/usr/local/archiva/derby -Dcatalina.logdir=/tmp -Xmx3072M\"" >> /tmp/startup.sh
+  echo "export JAVA_OPTS=\"-Djava.security.egd=file:/dev/urandom -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Djava.net.preferIPv4Stack=true -Dgrails.env=development -Dregistry.config.location=/var/lib/tomcat8/registry -Dhazelcast.config=/etc/tomcat8/hazelcast.xml -Dappserver.base=/usr/local/archiva -Dappserver.home=/usr/local/archiva -Dderby.system.home=/usr/local/archiva/derby -Dcatalina.logdir=/tmp -Xmx3072M\"" >> /tmp/startup.sh
   echo "/usr/share/tomcat8/bin/startup.sh" >> /tmp/startup.sh
   chmod +x /tmp/startup.sh
   sudo -u tomcat8 mkdir /tmp/tomcat
