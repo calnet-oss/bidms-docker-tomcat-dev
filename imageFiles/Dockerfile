@@ -70,10 +70,11 @@ RUN set -x \
   && test "$(md5sum /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz|cut -d' ' -f1)" = "$(cat /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5|cut -d' ' -f1)" \
   && (cd /usr/local; tar xfz /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz) \
   && ln -fs /usr/local/db-derby-${DERBY_VERSION}-bin /usr/local/db-derby-current \
+  && touch /usr/local/tomcat/common-lib/DERBY_IS_${DERBY_VERSION} \
   && (cd /usr/local/db-derby-${DERBY_VERSION}-bin/lib; \
-       cp -p derby.jar /usr/local/tomcat/common-lib/derby-${DERBY_VERSION}.jar; \
-       cp -p derbyclient.jar /usr/local/tomcat/common-lib/derbyclient-${DERBY_VERSION}.jar; \
-       cp -p derbynet.jar /usr/local/tomcat/common-lib/derbynet-${DERBY_VERSION}.jar; \
+       cp -p derby.jar /usr/local/tomcat/common-lib; \
+       cp -p derbyclient.jar /usr/local/tomcat/common-lib; \
+       cp -p derbynet.jar /usr/local/tomcat/common-lib; \
        cp -p derbyLocale*.jar /usr/local/tomcat/common-lib) \
   && rm -f /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz \
        /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5
