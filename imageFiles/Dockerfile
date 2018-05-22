@@ -72,6 +72,8 @@ RUN set -x \
   && ln -fs /usr/local/db-derby-${DERBY_VERSION}-bin /usr/local/db-derby-current \
   && (cd /usr/local/db-derby-${DERBY_VERSION}-bin/lib; \
        cp -p derby.jar /usr/local/tomcat/common-lib/derby-${DERBY_VERSION}.jar; \
+       cp -p derbyclient.jar /usr/local/tomcat/common-lib/derbyclient-${DERBY_VERSION}.jar; \
+       cp -p derbynet.jar /usr/local/tomcat/common-lib/derbynet-${DERBY_VERSION}.jar; \
        cp -p derbyLocale*.jar /usr/local/tomcat/common-lib) \
   && rm -f /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz \
        /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5
