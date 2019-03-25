@@ -65,8 +65,8 @@ RUN wget "https://repo1.maven.org/maven2/javax/activation/activation/${JAVA_ACTI
 # Archive needs Derby in the Tomcat common lib directory
 ARG DERBY_VERSION=10.13.1.1
 RUN set -x \
-  && wget "https://www.apache.org/dist/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz.md5" -O /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5 \
-  && wget "http://www-us.apache.org/dist/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz" -O /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz \
+  && wget "https://archive.apache.org/dist/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz.md5" -O /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5 \
+  && wget "https://archive.apache.org/dist/db/derby/db-derby-${DERBY_VERSION}/db-derby-${DERBY_VERSION}-bin.tar.gz" -O /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz \
   && test "$(md5sum /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz|cut -d' ' -f1)" = "$(cat /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz.md5|cut -d' ' -f1)" \
   && (cd /usr/local; tar xfz /tmp/db-derby-${DERBY_VERSION}-bin.tar.gz) \
   && ln -fs /usr/local/db-derby-${DERBY_VERSION}-bin /usr/local/db-derby-current \
