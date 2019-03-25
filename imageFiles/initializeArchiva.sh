@@ -95,10 +95,13 @@ function initialize_archiva {
     exit 1
   else
     echo "Successfully created Archiva admin user"
-
     # Get the login cookie and the xsrf token so we can do things as the
     # logged in admin
     cookieAndToken=$(/root/archivaAdminLogin.sh)
+    if [ $? != 0 ]; then
+      # try again
+      cookieAndToken=$(/root/archivaAdminLogin.sh)
+    fi
     if [ $? != 0 ]; then
       echo "Unable to login as the Archiva admin user" > /dev/stderr
       exit 1
